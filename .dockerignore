@@ -1,20 +1,50 @@
+# Git
 .git
 .gitignore
+
+# Python
 __pycache__
 *.pyc
 *.pyo
 *.pyd
 .Python
-env/
-venv/
-*.so
+env
+pip-log.txt
+pip-delete-this-directory.txt
+.tox
 .coverage
-htmlcov/
-.tox/
-.nox/
-.hypothesis/
-.pytest_cache/
-.idea/
-.vscode/
-*.sublime-project
-*.sublime-workspace 
+.coverage.*
+.cache
+nosetests.xml
+coverage.xml
+*.cover
+*.log
+.git
+.mypy_cache
+.pytest_cache
+.hypothesis
+
+# Environment variables
+.env
+
+# IDE
+.vscode
+.idea
+*.swp
+*.swo
+
+# OS
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Documentation
+README.md
+docs/
+
+# Development
+docker-compose.override.yml 
