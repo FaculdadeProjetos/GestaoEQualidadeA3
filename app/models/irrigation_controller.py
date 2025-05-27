@@ -9,23 +9,18 @@ class IrrigationController(db.Model):
     
     __tablename__ = 'irrigation_controllers'
     
-    # Primary key
     id = db.Column(db.Integer, primary_key=True)
     
-    # Controller information
     name = db.Column(db.String(100), nullable=False)
     moisture_level = db.Column(db.Float, nullable=False, default=0.0)
     last_irrigation = db.Column(db.DateTime, nullable=True)
     
-    # Status and timestamps
     is_active = db.Column(db.Boolean, default=True)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
     
-    # Foreign key
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
     
-    # Relationships
     user = db.relationship('User', backref=db.backref('irrigation_controllers', lazy=True))
     
     def __init__(self, name, user_id, moisture_level=0.0):
@@ -47,7 +42,7 @@ class IrrigationController(db.Model):
     @property
     def needs_irrigation(self):
         """Check if irrigation is needed based on moisture level."""
-        return self.moisture_level < 30.0  # Threshold can be configurable
+        return self.moisture_level < 30.0
     
     @property
     def status(self):

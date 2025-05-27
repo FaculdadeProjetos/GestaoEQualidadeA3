@@ -65,7 +65,6 @@ def register():
     
     return render_template('auth/register.html', title='Registrar', form=form)
 
-
 @auth.route('/logout')
 @login_required
 def logout():

@@ -16,23 +16,17 @@ def create_app(config_name=None):
     Returns:
         Flask: Configured Flask application instance
     """
-    # Determine configuration
     if config_name is None:
         config_name = os.environ.get('FLASK_ENV', 'default')
     
-    # Create Flask app
     app = Flask(__name__)
     
-    # Load configuration
     app.config.from_object(config[config_name])
     
-    # Initialize extensions
     init_extensions(app)
     
-    # Register blueprints
     _register_blueprints(app)
     
-    # Create database tables
     _create_tables(app)
     
     return app
@@ -60,8 +54,6 @@ def _create_tables(app):
         app (Flask): Flask application instance
     """
     with app.app_context():
-        # Import models to ensure they are registered
         from app.models import User, IrrigationController
         
-        # Create all tables
         db.create_all() 

@@ -53,7 +53,6 @@ def edit_controller(id):
     """Edit existing irrigation controller."""
     controller = IrrigationController.query.get_or_404(id)
     
-    # Check if the controller belongs to the current user
     if controller.user_id != current_user.id:
         flash('Você não tem permissão para editar este controlador', 'danger')
         return redirect(url_for('irrigation.list_controllers'))
@@ -83,7 +82,6 @@ def delete_controller(id):
     """Delete irrigation controller."""
     controller = IrrigationController.query.get_or_404(id)
     
-    # Check if the controller belongs to the current user
     if controller.user_id != current_user.id:
         flash('Você não tem permissão para deletar este controlador', 'danger')
     else:
@@ -100,11 +98,10 @@ def irrigate(id):
     """Trigger irrigation for a specific controller."""
     controller = IrrigationController.query.get_or_404(id)
     
-    # Check if the controller belongs to the current user
     if controller.user_id != current_user.id:
         flash('Você não tem permissão para controlar este sistema de irrigação', 'danger')
     else:
-        controller.irrigate()  # Use the model method
+        controller.irrigate()
         db.session.commit()
         flash(f'Irrigação acionada para {controller.name}!', 'success')
     

@@ -46,10 +46,8 @@ class UserForm(FlaskForm):
 @login_required
 def dashboard():
     """User dashboard with irrigation controllers overview."""
-    # Get the irrigation controllers for the current user
     controllers = IrrigationController.query.filter_by(user_id=current_user.id).all()
     
-    # Count controllers by moisture level
     low_moisture = 0
     medium_moisture = 0
     good_moisture = 0

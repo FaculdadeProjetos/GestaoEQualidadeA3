@@ -12,19 +12,15 @@ class User(db.Model, UserMixin):
     
     __tablename__ = 'users'
     
-    # Primary key
     id = db.Column(db.Integer, primary_key=True)
     
-    # User credentials
     username = db.Column(db.String(64), unique=True, nullable=False, index=True)
     email = db.Column(db.String(120), unique=True, nullable=False, index=True)
     password_hash = db.Column(db.String(256), nullable=False)
     
-    # User information
     first_name = db.Column(db.String(64))
     last_name = db.Column(db.String(64))
     
-    # Status and timestamps
     is_active = db.Column(db.Boolean, default=True)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
