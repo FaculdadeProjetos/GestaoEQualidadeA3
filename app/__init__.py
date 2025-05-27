@@ -1,38 +1,59 @@
+"""Flask application factory."""
+
 import os
 from flask import Flask
-from flask_sqlalchemy import SQLAlchemy
-from flask_login import LoginManager
 
-# Initialize SQLAlchemy
-db = SQLAlchemy()
-login_manager = LoginManager()
+from config import config
+from app.core.extensions import init_extensions, db
 
-def create_app():
+
+def create_app(config_name=None):
+    """Create and configure Flask application.
+    
+    Args:
+        config_name (str): Configuration name ('development', 'production', 'testing')
+        
+    Returns:
+        Flask: Configured Flask application instance
+    """
+    if config_name is None:
+        config_name = os.environ.get('FLASK_ENV', 'default')
+    
     app = Flask(__name__)
     
-    # Configuration
-    app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', 'default-dev-key')
-    app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL')
-    app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-
-    # Initialize extensions
-    db.init_app(app)
-    login_manager.init_app(app)
-    login_manager.login_view = 'auth.login'
+    app.config.from_object(config[config_name])
     
+    init_extensions(app)
+    
+    _register_blueprints(app)
+    
+    _create_tables(app)
+    
+    return app
+
+
+def _register_blueprints(app):
+    """Register application blueprints.
+    
+    Args:
+        app (Flask): Flask application instance
+    """
+    from app.auth import auth as auth_blueprint
+    from app.users import users as users_blueprint
+    from app.irrigation import irrigation as irrigation_blueprint
+    
+    app.register_blueprint(auth_blueprint)
+    app.register_blueprint(users_blueprint)
+    app.register_blueprint(irrigation_blueprint)
+
+
+def _create_tables(app):
+    """Create database tables.
+    
+    Args:
+        app (Flask): Flask application instance
+    """
     with app.app_context():
-        # Import parts of our application
         from app.models import User, IrrigationController
-        from app.auth import auth as auth_blueprint
-        from app.users import users as users_blueprint
-        from app.irrigation import irrigation as irrigation_blueprint
         
-        # Register blueprints
-        app.register_blueprint(auth_blueprint)
-        app.register_blueprint(users_blueprint)
-        app.register_blueprint(irrigation_blueprint)
-        
-        # Create database tables
-        db.create_all()
-        
-        return app 
+        db.create_all() 
