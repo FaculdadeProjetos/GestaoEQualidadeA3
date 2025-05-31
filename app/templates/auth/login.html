@@ -3,62 +3,79 @@
 {% block title %}Login{% endblock %}
 
 {% block auth_content %}
-<div class="card mx-auto" style="max-width: 400px;">
-    <div class="card-header text-center">
-        <h2>Login</h2>
-    </div>
-    <div class="card-body">
-        <form id="loginForm" action="" method="post" novalidate>
-            {{ form.hidden_tag() }}
+<div class="container my-4">
+    <div class="row justify-content-center">
+        <div class="col-md-6 col-lg-5">
+            <div class="card shadow-sm">
+                <div class="card-header text-center bg-primary text-white">
+                    <h2>Login</h2>
+                </div>
+                <div class="card-body">
+                    <form id="loginForm" action="" method="post" novalidate>
+                        {{ form.hidden_tag() }}
 
-            <div class="mb-3">
-                {{ form.username.label(class="form-label", for="username") }}
-                {{ form.username(class="form-control", id="username", placeholder="Digite seu usuário") }}
-                {% for error in form.username.errors %}
-                    <div class="text-danger small">{{ error }}</div>
-                {% endfor %}
-            </div>
+                        <div class="mb-3">
+                            {{ form.username.label(class="form-label") }}
+                            {{ form.username(class="form-control", id="username") }}
+                            {% for error in form.username.errors %}
+                            <div class="text-danger">{{ error }}</div>
+                            {% endfor %}
+                        </div>
 
-            <div class="mb-3">
-                {{ form.password.label(class="form-label", for="password") }}
-                {{ form.password(class="form-control", id="password", placeholder="Digite sua senha") }}
-                {% for error in form.password.errors %}
-                    <div class="text-danger small">{{ error }}</div>
-                {% endfor %}
-            </div>
+                        <div class="mb-3">
+                            {{ form.password.label(class="form-label") }}
+                            {{ form.password(class="form-control", id="password") }}
+                            {% for error in form.password.errors %}
+                            <div class="text-danger">{{ error }}</div>
+                            {% endfor %}
+                        </div>
 
-            <div class="mb-3 form-check">
-                {{ form.remember_me(class="form-check-input", id="rememberMe") }}
-                {{ form.remember_me.label(class="form-check-label", for="rememberMe") }}
-            </div>
+                        <div class="mb-3 form-check">
+                            {{ form.remember_me(class="form-check-input", id="rememberMe") }}
+                            {{ form.remember_me.label(class="form-check-label") }}
+                        </div>
 
-            <div class="d-grid gap-2">
-                {{ form.submit(class="btn btn-primary btn-lg") }}
+                        <div class="d-grid gap-2">
+                            {{ form.submit(class="btn btn-primary btn-lg") }}
+                        </div>
+                    </form>
+                </div>
+                <div class="card-footer text-center">
+                    <p>New User? <a href="{{ url_for('auth.register') }}">Click to Register!</a></p>
+                </div>
             </div>
-        </form>
-    </div>
-    <div class="card-footer text-center">
-        <p>New User? <a href="{{ url_for('auth.register') }}">Click to Register!</a></p>
+        </div>
     </div>
 </div>
-{% endblock %}
 
-{% block scripts %}
 <script>
-document.getElementById('loginForm').addEventListener('submit', function(event) {
-    const username = this.username.value.trim();
-    const password = this.password.value.trim();
+// Validação simples no lado do cliente
+document.getElementById('loginForm').addEventListener('submit', function(e) {
+    let valid = true;
+    let username = document.getElementById('username');
+    let password = document.getElementById('password');
 
-    if (!username) {
-        alert('Por favor, preencha o usuário.');
-        event.preventDefault();
-        return;
+    // Limpa erros anteriores
+    document.querySelectorAll('.text-danger.client-error').forEach(el => el.remove());
+
+    if (!username.value.trim()) {
+        showError(username, 'Username é obrigatório.');
+        valid = false;
     }
-    if (!password) {
-        alert('Por favor, preencha a senha.');
-        event.preventDefault();
-        return;
+    if (!password.value.trim()) {
+        showError(password, 'Senha é obrigatória.');
+        valid = false;
+    }
+
+    if (!valid) e.preventDefault();
+
+    function showError(input, message) {
+        const errorDiv = document.createElement('div');
+        errorDiv.className = 'text-danger client-error';
+        errorDiv.innerText = message;
+        input.parentNode.appendChild(errorDiv);
     }
 });
 </script>
+
 {% endblock %}
