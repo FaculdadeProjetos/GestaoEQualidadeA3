@@ -5,12 +5,12 @@
 
 {% block content %}
 <div class="row mb-4">
-    <div class="col-md-12">
-        <div class="card">
+    <div class="col">
+        <div class="card shadow-sm">
             <div class="card-body">
                 <h5 class="card-title">Welcome, {{ current_user.username }}!</h5>
                 <p class="card-text">This is your user and irrigation management dashboard.</p>
-                <div class="btn-group" role="group">
+                <div class="d-flex gap-2 flex-wrap">
                     <a href="{{ url_for('users.list_users') }}" class="btn btn-primary">Manage Users</a>
                     <a href="{{ url_for('irrigation.list_controllers') }}" class="btn btn-success">Manage Irrigation System</a>
                 </div>
@@ -19,116 +19,16 @@
     </div>
 </div>
 
-<!-- Irrigation System Summary -->
-<div class="row">
-    <div class="col-md-12">
-        <h3>Irrigation System Summary</h3>
-    </div>
-</div>
+<!-- Summary Cards -->
+<div class="row text-white g-3">
+    {% set summaries = [
+        {'title': 'Total Controllers', 'value': controller_count, 'color': 'primary', 'desc': 'Total irrigation controllers in your system'},
+        {'title': 'Low Moisture', 'value': low_moisture, 'color': 'danger', 'desc': 'Controllers with low moisture (0-30%)'},
+        {'title': 'Medium Moisture', 'value': medium_moisture, 'color': 'warning', 'desc': 'Controllers with medium moisture (30-60%)'},
+        {'title': 'Good Moisture', 'value': good_moisture, 'color': 'success', 'desc': 'Controllers with good moisture (60-100%)'}
+    ] %}
+    {% for item in summaries %}
+    <div class="col-md-6 col-lg-3">
+        <div class="card bg-{{ item.color }} h-100 shadow-sm"
 
-<div class="row">
-    <div class="col-md-3 mb-3">
-        <div class="card text-white bg-primary h-100">
-            <div class="card-body">
-                <h5 class="card-title">Total Controllers</h5>
-                <h1 class="display-4">{{ controller_count }}</h1>
-                <p class="card-text">Total irrigation controllers in your system</p>
-            </div>
-        </div>
-    </div>
     
-    <div class="col-md-3 mb-3">
-        <div class="card text-white bg-danger h-100">
-            <div class="card-body">
-                <h5 class="card-title">Low Moisture</h5>
-                <h1 class="display-4">{{ low_moisture }}</h1>
-                <p class="card-text">Controllers with low moisture (0-30%)</p>
-            </div>
-        </div>
-    </div>
-    
-    <div class="col-md-3 mb-3">
-        <div class="card text-white bg-warning h-100">
-            <div class="card-body">
-                <h5 class="card-title">Medium Moisture</h5>
-                <h1 class="display-4">{{ medium_moisture }}</h1>
-                <p class="card-text">Controllers with medium moisture (30-60%)</p>
-            </div>
-        </div>
-    </div>
-    
-    <div class="col-md-3 mb-3">
-        <div class="card text-white bg-success h-100">
-            <div class="card-body">
-                <h5 class="card-title">Good Moisture</h5>
-                <h1 class="display-4">{{ good_moisture }}</h1>
-                <p class="card-text">Controllers with good moisture (60-100%)</p>
-            </div>
-        </div>
-    </div>
-</div>
-
-{% if controllers %}
-<div class="row mt-4">
-    <div class="col-md-12">
-        <div class="card">
-            <div class="card-header">
-                <h5>Recent Controller Status</h5>
-            </div>
-            <div class="card-body">
-                <div class="table-responsive">
-                    <table class="table table-striped">
-                        <thead>
-                            <tr>
-                                <th>Name</th>
-                                <th>Moisture Level</th>
-                                <th>Last Irrigation</th>
-                                <th>Status</th>
-                                <th>Action</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {% for controller in controllers[:5] %}
-                            <tr>
-                                <td>{{ controller.name }}</td>
-                                <td>
-                                    <div class="progress" style="height: 20px;">
-                                        <div class="progress-bar {% if controller.moisture_level < 30 %}bg-danger{% elif controller.moisture_level < 60 %}bg-warning{% else %}bg-success{% endif %}" 
-                                             style="width: {{ controller.moisture_level }}%;">
-                                            {{ controller.moisture_level|round(1) }}%
-                                        </div>
-                                    </div>
-                                </td>
-                                <td>
-                                    {% if controller.last_irrigation %}
-                                        {{ controller.last_irrigation.strftime('%Y-%m-%d %H:%M') }}
-                                    {% else %}
-                                        Never
-                                    {% endif %}
-                                </td>
-                                <td>
-                                    {% if controller.is_active %}
-                                    <span class="badge bg-success">Active</span>
-                                    {% else %}
-                                    <span class="badge bg-danger">Inactive</span>
-                                    {% endif %}
-                                </td>
-                                <td>
-                                    <a href="{{ url_for('irrigation.list_controllers') }}" class="btn btn-sm btn-primary">View Details</a>
-                                </td>
-                            </tr>
-                            {% endfor %}
-                        </tbody>
-                    </table>
-                </div>
-                {% if controller_count > 5 %}
-                <div class="text-center mt-3">
-                    <a href="{{ url_for('irrigation.list_controllers') }}" class="btn btn-outline-primary">View All Controllers</a>
-                </div>
-                {% endif %}
-            </div>
-        </div>
-    </div>
-</div>
-{% endif %}
-{% endblock %} 
