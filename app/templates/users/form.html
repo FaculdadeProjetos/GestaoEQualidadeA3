@@ -3,83 +3,79 @@
 {% block title %}{{ title }}{% endblock %}
 {% block page_title %}{{ title }}{% endblock %}
 
+{% macro render_input(field) %}
+    <div class="mb-3">
+        {{ field.label(class="form-label") }}
+        {{ field(class="form-control", required=True) }}
+        {% for error in field.errors %}
+        <div class="text-danger">{{ error }}</div>
+        {% endfor %}
+    </div>
+{% endmacro %}
+
 {% block content %}
-<div class="row">
-    <div class="col-md-12">
-        <div class="card">
+<div class="row justify-content-center">
+    <div class="col-12 col-md-10 col-lg-8">
+        <div class="card shadow-sm rounded-3">
             <div class="card-body">
-                <form action="" method="post" novalidate>
+                <form id="registerForm" action="" method="post" novalidate>
                     {{ form.hidden_tag() }}
-                    
-                    <div class="row mb-3">
-                        <div class="col-md-6">
-                            {{ form.username.label(class="form-label") }}
-                            {{ form.username(class="form-control") }}
-                            {% for error in form.username.errors %}
-                            <div class="text-danger">{{ error }}</div>
-                            {% endfor %}
+
+                    <div class="row">
+                        <div class="col-12 col-md-6">
+                            {{ render_input(form.username) }}
                         </div>
-                        
-                        <div class="col-md-6">
-                            {{ form.email.label(class="form-label") }}
-                            {{ form.email(class="form-control") }}
-                            {% for error in form.email.errors %}
-                            <div class="text-danger">{{ error }}</div>
-                            {% endfor %}
+                        <div class="col-12 col-md-6">
+                            {{ render_input(form.email) }}
                         </div>
-                    </div>
-                    
-                    <div class="row mb-3">
-                        <div class="col-md-6">
-                            {{ form.first_name.label(class="form-label") }}
-                            {{ form.first_name(class="form-control") }}
-                            {% for error in form.first_name.errors %}
-                            <div class="text-danger">{{ error }}</div>
-                            {% endfor %}
+                        <div class="col-12 col-md-6">
+                            {{ render_input(form.first_name) }}
                         </div>
-                        
-                        <div class="col-md-6">
-                            {{ form.last_name.label(class="form-label") }}
-                            {{ form.last_name(class="form-control") }}
-                            {% for error in form.last_name.errors %}
-                            <div class="text-danger">{{ error }}</div>
-                            {% endfor %}
+                        <div class="col-12 col-md-6">
+                            {{ render_input(form.last_name) }}
                         </div>
-                    </div>
-                    
-                    <div class="row mb-3">
-                        <div class="col-md-6">
-                            {{ form.password.label(class="form-label") }}
-                            {{ form.password(class="form-control") }}
-                            {% for error in form.password.errors %}
-                            <div class="text-danger">{{ error }}</div>
-                            {% endfor %}
+                        <div class="col-12 col-md-6">
+                            {{ render_input(form.password) }}
                             {% if request.endpoint == 'users.edit_user' %}
-                            <small class="form-text text-muted">Leave blank to keep current password.</small>
+                            <small class="form-text text-muted">Deixe em branco para manter a senha atual.</small>
                             {% endif %}
                         </div>
-                        
-                        <div class="col-md-6">
-                            {{ form.password2.label(class="form-label") }}
-                            {{ form.password2(class="form-control") }}
-                            {% for error in form.password2.errors %}
-                            <div class="text-danger">{{ error }}</div>
-                            {% endfor %}
+                        <div class="col-12 col-md-6">
+                            {{ render_input(form.password2) }}
                         </div>
                     </div>
-                    
-                    <div class="mb-3 form-check">
+
+                    <div class="form-check mb-3">
                         {{ form.is_active(class="form-check-input") }}
                         {{ form.is_active.label(class="form-check-label") }}
                     </div>
-                    
-                    <div class="mb-3">
+
+                    <div class="d-flex justify-content-end gap-2">
                         {{ form.submit(class="btn btn-primary") }}
-                        <a href="{{ url_for('users.list_users') }}" class="btn btn-secondary">Cancel</a>
+                        <a href="{{ url_for('users.list_users') }}" class="btn btn-secondary">Cancelar</a>
                     </div>
                 </form>
             </div>
         </div>
     </div>
 </div>
-{% endblock %} 
+
+<script>
+document.getElementById('registerForm').addEventListener('submit', function(event) {
+    const pwd = document.querySelector('[name="password"]');
+    const pwd2 = document.querySelector('[name="password2"]');
+
+    // Remover erros antigos
+    document.querySelectorAll('.text-danger.client-error').forEach(el => el.remove());
+
+    if (pwd && pwd2 && pwd.value !== pwd2.value) {
+        event.preventDefault();
+        const error = document.createElement('div');
+        error.className = 'text-danger client-error mt-1';
+        error.innerText = 'As senhas não coincidem.';
+        pwd2.parentNode.appendChild(error);
+    }
+});
+</script>
+{% endblock %}
+
