@@ -1,191 +1,128 @@
-# Sistema de Gestão e Qualidade A3
+# 🌱 Sistema de Gestão de Usuários e Controle de Irrigação
 
-Sistema de gestão de usuários e controle de irrigação desenvolvido com Flask e MySQL.
+Este projeto é um sistema web desenvolvido com **Flask**, **MySQL** e **Docker**, destinado à **gestão de usuários** e **controle automatizado de irrigação**, com arquitetura modular e boas práticas de desenvolvimento.
+
+## 📦 Tecnologias Utilizadas
+
+- **Backend:** Python 3.10+, Flask
+- **Banco de Dados:** MySQL 8.0
+- **Ambiente:** Docker, Docker Compose
+- **Padrões:** Factory Pattern, Repository Pattern, Blueprints
+- **Segurança:** CSRF, senhas hash (Werkzeug), sessões seguras
 
 ## 🏗️ Estrutura do Projeto
 
 ```
 GestaoEQualidadeA3/
 ├── app/
-│   ├── __init__.py              # Application factory
-│   ├── core/
-│   │   └── extensions.py        # Flask extensions
-│   ├── models/
-│   │   ├── __init__.py
-│   │   ├── user.py             # User model
-│   │   └── irrigation_controller.py
-│   ├── auth/
-│   │   ├── __init__.py
-│   │   ├── routes.py           # Authentication routes
-│   │   └── forms.py            # Authentication forms
-│   ├── users/
-│   │   ├── __init__.py
-│   │   └── routes.py           # User management routes
-│   ├── irrigation/
-│   │   ├── __init__.py
-│   │   └── routes.py           # Irrigation control routes
-│   └── templates/              # Jinja2 templates
-├── config.py                   # Configuration settings
-├── wsgi.py                     # WSGI entry point
-├── requirements.txt            # Python dependencies
-├── docker-compose.yml          # Docker services
-├── Dockerfile                  # Docker image definition
-├── init.sql                    # Database initialization
-├── wait-for-db.sh             # Database wait script
-└── env.example                # Environment variables example
+│   ├── auth/                # Autenticação
+│   ├── irrigation/          # Controle de irrigação
+│   ├── users/               # Gerenciamento de usuários
+│   ├── models/              # Modelos de dados
+│   ├── templates/           # Jinja2 templates
+│   └── core/                # Extensões e configurações Flask
+├── config.py
+├── requirements.txt
+├── docker-compose.yml
+├── Dockerfile
+├── init.sql
+└── env.example
 ```
 
-## 🚀 Configuração e Execução
+## 🚀 Como Executar
 
-### Pré-requisitos
+### ✅ Pré-requisitos
 
-- Docker e Docker Compose
-- Python 3.10+ (para desenvolvimento local)
+- Docker e Docker Compose instalados
+- Python 3.10+ (para execução local)
 
-### Configuração de Ambiente
+### 🔧 Configuração
 
-1. Copie o arquivo de exemplo de variáveis de ambiente:
-```bash
-cp env.example .env
-```
+1. Clone o repositório:
+   ```bash
+   git clone https://github.com/FaculdadeProjetos/GestaoEQualidadeA3.git
+   cd GestaoEQualidadeA3
+   ```
 
-2. Edite o arquivo `.env` com suas configurações:
-```bash
-# Flask Configuration
-FLASK_ENV=development
-SECRET_KEY=your-secret-key-here
+2. Copie e configure o arquivo `.env`:
+   ```bash
+   cp env.example .env
+   ```
 
-# Database Configuration
-DB_HOST=db
-DB_PORT=3306
-DB_NAME=user_management
-DB_USER=user
-DB_PASSWORD=password
+3. Execute com Docker:
+   ```bash
+   docker-compose up --build
+   ```
 
-# MySQL Root Password (for Docker)
-MYSQL_ROOT_PASSWORD=root_password
-```
+Ou, para execução local:
 
-### Execução com Docker
-
-1. **Desenvolvimento:**
-```bash
-docker-compose up --build
-```
-
-2. **Produção:**
-```bash
-docker-compose -f docker-compose.yml up --build
-```
-
-A aplicação estará disponível em `http://localhost:5000`
-
-### Execução Local (Desenvolvimento)
-
-1. Instale as dependências:
 ```bash
 pip install -r requirements.txt
-```
-
-2. Configure as variáveis de ambiente no arquivo `.env`
-
-3. Execute a aplicação:
-```bash
 flask run --debug
 ```
 
 ## 🗄️ Banco de Dados
 
-O sistema utiliza MySQL 8.0 com as seguintes tabelas:
+- Host: `localhost`
+- Porta: `3307`
+- Usuário: `user`
+- Senha: `password` (configurável no `.env`)
+- Banco: `user_management`
 
-- **users**: Gerenciamento de usuários
-- **irrigation_controllers**: Controle de sistemas de irrigação
+**Tabelas:**
+- `users`: usuários do sistema
+- `irrigation_controllers`: dados de controle de irrigação
 
-### Acesso ao Banco
+## ⚙️ Funcionalidades
 
-- **Host**: localhost
-- **Porta**: 3307 (mapeada do container)
-- **Usuário**: user
-- **Senha**: password (configurável via .env)
-- **Database**: user_management
+### 👤 Gestão de Usuários
+- Registro, login e logout
+- Sessões autenticadas
+- Visualização e edição de perfil
 
-## 🔧 Funcionalidades
-
-### Autenticação
-- Login/Logout de usuários
-- Registro de novos usuários
-- Gerenciamento de sessões
-
-### Gestão de Usuários
-- Dashboard do usuário
-- Perfil e configurações
-- Listagem de usuários
-
-### Controle de Irrigação
-- Monitoramento de níveis de umidade
-- Controle de sistemas de irrigação
+### 💧 Controle de Irrigação
+- Monitoramento de umidade
 - Histórico de irrigações
+- Ativação manual e automática de irrigação
 
-## 🏛️ Arquitetura
+## 🧱 Arquitetura & Boas Práticas
 
-O projeto segue uma arquitetura modular baseada em:
+- **Factory Pattern**: criação modular da aplicação
+- **Repository Pattern**: isolamento da lógica de dados
+- **BluePrints**: rotas organizadas por domínio
+- **Clean Code**: código limpo e comentado
+- **Principais Princípios**: SOLID, DRY, SoC
 
-- **Application Factory Pattern**: Criação flexível da aplicação Flask
-- **Blueprint Pattern**: Organização modular das rotas
-- **Repository Pattern**: Separação de modelos de dados
-- **Configuration Management**: Gestão centralizada de configurações
+## 🔐 Segurança
 
-### Princípios Aplicados
-
-- **Clean Code**: Código limpo e bem documentado
-- **Separation of Concerns**: Separação clara de responsabilidades
-- **DRY (Don't Repeat Yourself)**: Reutilização de código
-- **SOLID Principles**: Princípios de design orientado a objetos
-
-## 🔒 Segurança
-
-- Senhas hasheadas com Werkzeug
-- Proteção CSRF com Flask-WTF
+- Senhas hash com `Werkzeug`
+- Proteção contra CSRF com `Flask-WTF`
 - Validação de formulários
-- Gerenciamento seguro de sessões
+- Sessões seguras
 
 ## 🐳 Docker
 
-### Multi-stage Build
-O Dockerfile utiliza multi-stage builds para:
-- **Development**: Hot reload e debugging
-- **Production**: Imagem otimizada com Gunicorn
+- Multi-stage builds:
+  - Dev: hot reload e debug
+  - Prod: otimizado com Gunicorn
+- Health checks e dependência de serviços (MySQL)
 
-### Health Checks
-- Verificação de saúde do banco MySQL
-- Dependências entre serviços
+## 🧪 Testes e Manutenção
 
-## 📝 Desenvolvimento
-
-### Estrutura de Código
-
-- **Models**: `app/models/` - Definição de modelos de dados
-- **Views**: `app/*/routes.py` - Lógica de rotas e views
-- **Forms**: `app/*/forms.py` - Formulários e validações
-- **Templates**: `app/templates/` - Templates Jinja2
-- **Extensions**: `app/core/extensions.py` - Extensões Flask
-
-### Boas Práticas
-
-- Documentação em português para facilitar manutenção
-- Type hints quando aplicável
-- Testes unitários (em desenvolvimento)
+- Suporte a **type hints**
+- Testes unitários (em progresso)
 - Logging estruturado
-- Tratamento de erros
+- Tratamento de erros centralizado
+- Documentação técnica em português
 
-## 🤝 Contribuição
+## 🤝 Contribuindo
 
-1. Fork o projeto
-2. Crie uma branch para sua feature (`git checkout -b feature/AmazingFeature`)
-3. Commit suas mudanças (`git commit -m 'Add some AmazingFeature'`)
-4. Push para a branch (`git push origin feature/AmazingFeature`)
+1. Faça um fork
+2. Crie uma branch (`git checkout -b feature/NovaFuncionalidade`)
+3. Commit (`git commit -m 'feat: adiciona nova funcionalidade'`)
+4. Push (`git push origin feature/NovaFuncionalidade`)
 5. Abra um Pull Request
 
 ## 📄 Licença
 
-Este projeto está sob a licença MIT. Veja o arquivo `LICENSE` para mais detalhes. 
+Distribuído sob a **licença MIT**. Veja o arquivo [LICENSE](LICENSE) para mais informações.
