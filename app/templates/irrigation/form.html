@@ -4,74 +4,68 @@
 {% block page_title %}{{ title }}{% endblock %}
 
 {% block content %}
-<div class="row">
-    <div class="col-md-12">
-        <div class="card">
-            <div class="card-body">
-                <form action="" method="post" novalidate>
-                    {{ form.hidden_tag() }}
-                    
-                    <div class="row mb-3">
-                        <div class="col-md-12">
-                            {{ form.name.label(class="form-label") }}
-                            {{ form.name(class="form-control") }}
-                            {% for error in form.name.errors %}
-                            <div class="text-danger">{{ error }}</div>
-                            {% endfor %}
-                        </div>
-                    </div>
-                    
-                    <div class="row mb-3">
-                        <div class="col-md-12">
-                            {{ form.moisture_level.label(class="form-label") }}
-                            {{ form.moisture_level(class="form-control", type="range", min="0", max="100", step="1", oninput="updateMoistureValue(this.value)") }}
-                            <div class="d-flex justify-content-between align-items-center">
-                                <span class="text-danger">Low (0%)</span>
-                                <span id="moistureDisplay" class="badge bg-primary">{{ form.moisture_level.data|default(0) }}%</span>
-                                <span class="text-success">High (100%)</span>
-                            </div>
-                            {% for error in form.moisture_level.errors %}
-                            <div class="text-danger">{{ error }}</div>
-                            {% endfor %}
-                        </div>
-                    </div>
-                    
-                    <div class="mb-3 form-check">
-                        {{ form.is_active(class="form-check-input") }}
-                        {{ form.is_active.label(class="form-check-label") }}
-                    </div>
-                    
-                    <div class="mb-3">
-                        {{ form.submit(class="btn btn-primary") }}
-                        <a href="{{ url_for('irrigation.list_controllers') }}" class="btn btn-secondary">Cancel</a>
-                    </div>
-                </form>
+<div class="container mt-4">
+  <div class="row justify-content-center">
+    <div class="col-12 col-md-6">
+      <div class="card">
+        <div class="card-body">
+          <form action="" method="post" novalidate>
+            {{ form.hidden_tag() }}
+
+            <div class="mb-3">
+              {{ form.name.label(class="form-label") }}
+              {{ form.name(class="form-control", required=true) }}
+              {% for error in form.name.errors %}
+                <div class="text-danger small">{{ error }}</div>
+              {% endfor %}
             </div>
+
+            <div class="mb-3">
+              {{ form.moisture_level.label(class="form-label") }}
+              {{ form.moisture_level(class="form-range", type="range", min="0", max="100", step="1", oninput="updateMoistureValue(this.value)", required=true) }}
+              <div class="d-flex justify-content-between mt-1">
+                <small class="text-danger">Low (0%)</small>
+                <span id="moistureDisplay" class="badge bg-primary">{{ form.moisture_level.data|default(0) }}%</span>
+                <small class="text-success">High (100%)</small>
+              </div>
+              {% for error in form.moisture_level.errors %}
+                <div class="text-danger small">{{ error }}</div>
+              {% endfor %}
+            </div>
+
+            <div class="form-check mb-3">
+              {{ form.is_active(class="form-check-input") }}
+              {{ form.is_active.label(class="form-check-label") }}
+            </div>
+
+            <button type="submit" class="btn btn-primary">{{ form.submit.label.text }}</button>
+            <a href="{{ url_for('irrigation.list_controllers') }}" class="btn btn-secondary ms-2">Cancel</a>
+          </form>
         </div>
+      </div>
     </div>
+  </div>
 </div>
 
 <script>
-    function updateMoistureValue(val) {
-        document.getElementById('moistureDisplay').innerText = val + '%';
-        
-        // Change badge color based on value
-        const badge = document.getElementById('moistureDisplay');
-        if (val < 30) {
-            badge.className = 'badge bg-danger';
-        } else if (val < 60) {
-            badge.className = 'badge bg-warning';
-        } else {
-            badge.className = 'badge bg-success';
-        }
+  function updateMoistureValue(val) {
+    const badge = document.getElementById('moistureDisplay');
+    badge.textContent = val + '%';
+
+    if (val < 30) {
+      badge.className = 'badge bg-danger';
+    } else if (val < 60) {
+      badge.className = 'badge bg-warning text-dark';
+    } else {
+      badge.className = 'badge bg-success';
     }
-    
-    // Initialize on page load
-    document.addEventListener('DOMContentLoaded', function() {
-        const moistureInput = document.querySelector('input[type="range"]');
-        if (moistureInput) {
-            updateMoistureValue(moistureInput.value);
-        }
-    });
+  }
+
+  document.addEventListener('DOMContentLoaded', function() {
+    const moistureInput = document.querySelector('input[type="range"]');
+    if (moistureInput) {
+      updateMoistureValue(moistureInput.value);
+    }
+  });
 </script>
 {% endblock %}
